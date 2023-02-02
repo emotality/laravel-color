@@ -1,0 +1,43 @@
+{
+    "name": "emotality/laravel-color",
+    "description": "A Laravel package to retrieve information from colors, convert and more.",
+    "type": "library",
+    "keywords": [
+        "laravel",
+        "color",
+        "rgb",
+        "hsv",
+        "hsl",
+        "hex"
+    ],
+    "license": "MIT",
+    "homepage": "https://github.com/emotality/laravel-color",
+    "authors": [
+        {
+            "name": "Jean-Pierre Fourie",
+            "homepage": "https://emotality.com",
+            "email": "jp@emotality.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.2.5",
+        "ext-json": "*",
+        "ext-bcmath": "*",
+        "illuminate/support": ">=7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Emotality\\LaravelColor\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "aliases": {
+                "Color": "Emotality\\LaravelColor\\Color"
+            }
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "version": "1.0.0"
+}
