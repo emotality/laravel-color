@@ -8,10 +8,10 @@
 
 A Laravel package to retrieve information from colors, convert and more.
 
-## Min Requirements
+## Requirements
 
-- PHP 7.2.5+
-- Laravel 7+
+- PHP 7.3+
+- Laravel 8+
 
 ## Installation
 
@@ -110,7 +110,7 @@ array:16 [
   "brightness" => 41   // out of 100
   "dark" => true
   "light" => false
-  "font_color" => "#FFFFFF"
+  "font_color" => "#ffffff"
 ]
 ```
 
