@@ -8,9 +8,7 @@
 
 A Laravel package to retrieve information from colors, convert and more.
 
-:warning: **NOTE:** This is a work in progress!
-
-## Requirements
+## Min Requirements
 
 - PHP 7.2.5+
 - Laravel 7+
@@ -26,27 +24,43 @@ composer require emotality/laravel-color
 ```php
 use Emotality\LaravelColor\Color;
 
+$value = Color::parse('#ff2830')->functionName();
+// or
 $color = Color::parse('#ff2830');
-
-$dark = $color->isDark();
-$rgb = $color->rgb();
-$brightness = $color->brightness();
-
-// Functions can also be called directly without parsing the color with `parse()`:
-$light = Color::isLight('#ff2830');
-$hsv = Color::hsv('#ff2830');
-$brightness = Color::brightness('#ff2830');
+$value1 = $color->functionName();
+$value2 = $color->functionName();
 ```
-As this is a Facade, it can be called without an import like this:
+
+Functions can also be called directly without parsing the color with `parse()`:
+
+```php
+use Emotality\LaravelColor\Color;
+
+$value = Color::functionName('#ff2830');
+```
+
+As this is a Facade, it can just be called without an import like this:
+
+```php
+$value = \Color::functionName('#ff2830');
+```
+
+### Examples:
 
 ```php
 $black = '#000';
 $is_dark = \Color::isDark($black); // true
 $font_color = \Color::fontColor($black); // #ffffff
 ```
+
 ```html
-<!-- For colors where `isDark()` is true, `fontColor()` will return `#ffffff` -->
-<a href="#" style="background:#000; color:{{ \Color::fontColor('#000') }};">...</a>
+<!-- 
+For colors where `isDark()` is true, `fontColor()` will return `#ffffff`
+and colors where `isLight()` is true, `fontColor()` will return `#000000`. 
+-->
+<a href="#" style="background:#000; color:{{ \Color::fontColor('#000') }};">
+    ...
+</a>
 ```
 
 ## Functions
@@ -58,9 +72,9 @@ function hsv(string $hex = null) : object;
 function luminance(string $hex = null) : float;
 function lightness(string $hex = null) : int;
 function brightness(string $hex = null) : int;
-function isDark(string $hex = null) : bool;
-function isLight(string $hex = null) : bool;
-function fontColor(string $hex = null) : string;
+function isDark(string $hex = null, int $brightness = null) : bool;
+function isLight(string $hex = null, int $brightness = null) : bool;
+function fontColor(string $hex = null, int $brightness = null) : string;
 function toArray() : array;
 // more coming soon!
 ```
@@ -68,33 +82,32 @@ function toArray() : array;
 #### toArray() :
 
 ```php
-array:14 [
+array:13 [
   "hex" => "#ff2830"
-  "red" => 1
-  "green" => 0.15686274509804
-  "blue" => 0.18823529411765
-  "min" => 0.15686274509804
-  "max" => 1
-  "luminance" => 22.99
-  "lightness" => 58
-  "brightness" => 41
-  "dark" => true
-  "light" => false
+  "hexdec" => 16721968
+  "red" => 1           // out of 1
+  "green" => 0.1568627 // out of 1
+  "blue" => 0.1882352  // out of 1
   "rgb" => {
-    +"red": 255
-    +"green": 40
-    +"blue": 48
+    +"red": 255        // out of 255
+    +"green": 40       // out of 255
+    +"blue": 48        // out of 255
   }
   "hsl" => {
-    +"hue": 358
-    +"saturation": 100
-    +"lightness": 58
+    +"hue": 358        // out of 360
+    +"saturation": 100 // out of 100
+    +"lightness": 58   // out of 100
   }
   "hsv" => {
-    +"hue": 358
-    +"saturation": 84
-    +"value": 100
+    +"hue": 358        // out of 360
+    +"saturation": 84  // out of 100
+    +"value": 100      // out of 100
   }
+  "luminance" => 22.99 // out of 100
+  "lightness" => 58    // out of 100
+  "brightness" => 41   // out of 100
+  "dark" => true
+  "light" => false
 ]
 ```
 

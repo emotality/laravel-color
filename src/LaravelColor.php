@@ -4,47 +4,28 @@ namespace Emotality\LaravelColor;
 
 class LaravelColor
 {
+    /** @var string Key for bright percentage. */
+    public const brightPercentage = 'bright_percentage';
+
+    /** @var string Key for light font color. */
+    public const lightColorFont = 'font_light';
+
+    /** @var string Key for dark font color. */
+    public const darkColorFont = 'font_dark';
+
     /**
      * The color in hex string format.
      *
      * @var string
      */
-    public $hex = '000000';
+    protected $hex = '000000';
 
     /**
-     * The color's hex value for Red.
+     * The color in hex decimal format.
      *
      * @var int
      */
-    protected $red = 0;
-
-    /**
-     * The color's hex value for Green.
-     *
-     * @var int
-     */
-    protected $green = 0;
-
-    /**
-     * The color's hex value for Blue.
-     *
-     * @var int
-     */
-    protected $blue = 0;
-
-    /**
-     * The lowest (darkest) color component's value.
-     *
-     * @var int
-     */
-    protected $min = 0;
-
-    /**
-     * The highest (lightest) color component's value.
-     *
-     * @var int
-     */
-    protected $max = 0;
+    protected $hexdec = 0;
 
     /**
      * Original RGB values.
@@ -54,25 +35,71 @@ class LaravelColor
     protected $rgb;
 
     /**
+     * The color's hex value for Red.
+     *
+     * @var float
+     */
+    protected $red = 0;
+
+    /**
+     * The color's hex value for Green.
+     *
+     * @var float
+     */
+    protected $green = 0;
+
+    /**
+     * The color's hex value for Blue.
+     *
+     * @var float
+     */
+    protected $blue = 0;
+
+    /**
+     * The lowest (darkest) color component's value.
+     *
+     * @var float
+     */
+    protected $min = 0;
+
+    /**
+     * The highest (lightest) color component's value.
+     *
+     * @var float
+     */
+    protected $max = 0;
+
+    /**
+     * @var float
+     */
+    private $d = 0;
+
+    /**
      * The color components.
      *
      * @var array<string, int>
      */
-    protected $components = [];
+    protected $components = [
+        'red'   => 0,
+        'green' => 0,
+        'blue'  => 0,
+    ];
 
-    /** @var int Percentage to determine if a color is dark. */
-    const BRIGHTNESS_PERCENT = 50;
-
-    /** @var string Light font color. */
-    const FONT_LIGHT = '#ffffff';
-
-    /** @var string Dark font color. */
-    const FONT_DARK = '#000000';
+    /**
+     * The options.
+     *
+     * @var array<string, mixed>
+     */
+    protected $options = [
+        self::brightPercentage => 60,
+        self::darkColorFont    => '#ffffff',
+        self::lightColorFont   => '#000000',
+    ];
 
     /**
      * LaravelColor constructor.
      *
-     * @param  string|null  $hex
+     * @param  string|null  $hex The hex color code to parse, with or without hashtag.
      * @return void
      */
     public function __construct(string $hex = null)
@@ -85,15 +112,24 @@ class LaravelColor
     }
 
     /**
-     * @param  string  $hex
+     * @param  string  $hex The hex color code to parse, with or without hashtag.
+     * @param  array<string, mixed>|null  $options
      * @return $this
      */
-    public function parse(string $hex) : self
+    public function parse(string $hex, array $options = null): self
     {
-        $this->hex = $hex = trim($hex, '#');
+        if ($options) {
+            $this->set($options);
+        }
 
-        if (strlen($hex) == 3) {
+        $this->hex = $hex = strtolower(trim($hex, '#'));
+
+        if (strlen($hex) === 3) {
             $this->hex = $hex = $hex[0].$hex[0].$hex[1].$hex[1].$hex[2].$hex[2];
+        }
+
+        if (! preg_match('/^[A-F0-9]{6}$/', $hex)) {
+            throw new LaravelColorException(sprintf('Invalid hex color! [#%s]', $hex));
         }
 
         $r = $this->rgb->r = hexdec($hex[0].$hex[1]);
@@ -104,8 +140,10 @@ class LaravelColor
         $this->green = $g / 255;
         $this->blue = $b / 255;
 
+        $this->hexdec = hexdec($hex);
         $this->min = min($this->red, $this->green, $this->blue);
         $this->max = max($this->red, $this->green, $this->blue);
+        $this->d = $this->max - $this->min;
 
         $this->components = [
             'red'   => $this->red,
@@ -117,12 +155,39 @@ class LaravelColor
     }
 
     /**
-     * Red. Green. Blue.
+     * Set/modify parsing options.
      *
-     * @param  string|null  $hex
+     * @param  array<string, mixed>  $options The options you want to set.
+     * @return $this
+     */
+    public function set(array $options): self
+    {
+        foreach ($options as $key => $value) {
+            if (isset($this->options[$key]) && ! empty($value)) {
+                $this->options[$key] = $value;
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Get the hex color code with hashtag.
+     *
+     * @return string
+     */
+    public function hex(): string
+    {
+        return '#'.ltrim($this->hex, '#');
+    }
+
+    /**
+     * Get red, green and blue from parsed color.
+     *
+     * @param  string|null  $hex The hex color code to parse, with or without hashtag.
      * @return object
      */
-    public function rgb(string $hex = null) : object
+    public function rgb(string $hex = null): object
     {
         if ($hex) {
             $this->parse($hex);
@@ -136,68 +201,67 @@ class LaravelColor
     }
 
     /**
-     * Hue. Saturation. Lightness.
+     * Get hue, saturation and lightness from parsed color.
      *
-     * @param  string|null  $hex
+     * @param  string|null  $hex The hex color code to parse, with or without hashtag.
      * @return object
      * @url https://www.had2know.org/technology/hsl-rgb-color-converter.html
      */
-    public function hsl(string $hex = null) : object
+    public function hsl(string $hex = null): object
     {
         if ($hex) {
             $this->parse($hex);
         }
 
-        $h = $l = ($this->max + $this->min) / 2;
-        $d = $this->max - $this->min;
-
-        if ($this->max == $this->min) {
-            $h = $s = 0;
-        } else {
-            $s = $d / (1 - abs(2 * $l - 1));
-
-            switch ($this->max) {
-                case $this->red:
-                    $h = ($this->green - $this->blue) / $d + ($this->green < $this->blue ? 6 : 0);
-                    break;
-                case $this->green:
-                    $h = ($this->blue - $this->red) / $d + 2;
-                    break;
-                case $this->blue:
-                    $h = ($this->red - $this->green) / $d + 4;
-                    break;
-            }
-
-            $h /= 6;
+        if ($this->max !== $this->min) {
+            $l = $this->d / 2;
+            $s = $this->d / (1 - abs(2 * $l - 1));
         }
 
         return (object) [
-            'hue'        => intval(round($h * 360)),
-            'saturation' => intval(round($s * 100)),
-            'lightness'  => intval(round($l * 100)),
+            'hue'        => $this->hue(),
+            'saturation' => intval(round(($s ?? 0) * 100)),
+            'lightness'  => $this->lightness(),
         ];
     }
 
     /**
-     * Hue. Saturation. Value.
+     * Get hue, saturation and value from parsed color.
      *
-     * @param  string|null  $hex
+     * @param  string|null  $hex The hex color code to parse, with or without hashtag.
      * @return object
      * @url https://www.had2know.org/technology/hsv-rgb-conversion-formula-calculator.html
      */
-    public function hsv(string $hex = null) : object
+    public function hsv(string $hex = null): object
     {
         if ($hex) {
             $this->parse($hex);
         }
 
-        $h = $v = $this->max;
-        $d = $this->max - $this->min;
-        $s = $this->max === 0 ? 0 : $d / $this->max;
+        $s = $this->max === 0 ? 0 : $this->d / $this->max;
 
-        if ($this->max == $this->min) {
-            $h = 0;
-        } else {
+        return (object) [
+            'hue'        => $this->hue(),
+            'saturation' => intval(round($s * 100)),
+            'value'      => $this->value(),
+        ];
+    }
+
+    /**
+     * Get the hue from parsed color in a value out of 360.
+     *
+     * @param  string|null  $hex The hex color code to parse, with or without hashtag.
+     * @return int
+     */
+    public function hue(string $hex = null): int
+    {
+        if ($hex) {
+            $this->parse($hex);
+        }
+
+        if ($this->max !== $this->min) {
+            $d = $this->max - $this->min;
+
             switch ($this->max) {
                 case $this->red:
                     $h = ($this->green - $this->blue) / $d + ($this->green < $this->blue ? 6 : 0);
@@ -213,20 +277,31 @@ class LaravelColor
             $h /= 6;
         }
 
-        return (object) [
-            'hue'        => intval(round($h * 360)),
-            'saturation' => intval(round($s * 100)),
-            'value'      => intval(round($v * 100)),
-        ];
+        return intval(round(($h ?? 0) * 360));
     }
 
     /**
-     * Color relative luminance.
+     * Get the value from parsed color in a percentage value.
      *
-     * @param  string|null  $hex
+     * @param  string|null  $hex The hex color code to parse, with or without hashtag.
+     * @return int
+     */
+    public function value(string $hex = null): int
+    {
+        if ($hex) {
+            $this->parse($hex);
+        }
+
+        return intval(round($this->max * 100));
+    }
+
+    /**
+     * Color relative luminance from parsed color in a percentage value.
+     *
+     * @param  string|null  $hex The hex color code to parse, with or without hashtag.
      * @return float
      */
-    public function luminance(string $hex = null) : float
+    public function luminance(string $hex = null): float
     {
         if ($hex) {
             $this->parse($hex);
@@ -240,17 +315,19 @@ class LaravelColor
             }
         }
 
-        // Calculate relative luminance using ITU-R BT. 709 coefficients
+        // ITU-R BT. 709
         $luminance_perc = (($components['red'] * 0.2126) + ($components['green'] * 0.7152) + ($components['blue'] * 0.0722)) * 100;
 
         return round($luminance_perc, 2);
     }
 
     /**
-     * @param  string|null  $hex
+     * Get the lightness from parsed color in a percentage value.
+     *
+     * @param  string|null  $hex The hex color code to parse, with or without hashtag.
      * @return int
      */
-    public function lightness(string $hex = null) : int
+    public function lightness(string $hex = null): int
     {
         if ($hex) {
             $this->parse($hex);
@@ -260,10 +337,12 @@ class LaravelColor
     }
 
     /**
-     * @param  string|null  $hex
+     * Get the brightness from parsed color in a percentage value.
+     *
+     * @param  string|null  $hex The hex color code to parse, with or without hashtag.
      * @return int
      */
-    public function brightness(string $hex = null) : int
+    public function brightness(string $hex = null): int
     {
         if ($hex) {
             $this->parse($hex);
@@ -273,67 +352,98 @@ class LaravelColor
     }
 
     /**
-     * If the specified color is dark.
+     * If the parsed color is darker than specified brightness percentage.
      *
-     * @param  string|null  $hex
+     * @param  string|null  $hex The hex color code to parse, with or without hashtag.
+     * @param  int|null  $brightness The percentage of brightness to measure against, default is 60.
      * @return bool
      */
-    public function isDark(string $hex = null) : bool
+    public function isDark(string $hex = null, int $brightness = null): bool
     {
-        return $this->brightness($hex) < self::BRIGHTNESS_PERCENT;
+        return $this->brightness($hex) < ($brightness ?? $this->options[self::brightPercentage]);
     }
 
     /**
-     * If the specified color is light.
+     * If the parsed color is lighter than specified brightness percentage.
      *
-     * @param  string|null  $hex
+     * @param  string|null  $hex The hex color code to parse, with or without hashtag.
+     * @param  int|null  $brightness The percentage of brightness to measure against, default is 60.
      * @return bool
      */
-    public function isLight(string $hex = null) : bool
+    public function isLight(string $hex = null, int $brightness = null): bool
     {
-        return ! $this->isDark($hex);
+        return ! $this->isDark($hex, $brightness);
     }
 
     /**
-     * Foreground font color if specified
-     * color is the background.
+     * Foreground font color if parsed color is the background.
      *
-     * @param  string|null  $hex
+     * @param  string|null  $hex The hex color code to parse, with or without hashtag.
+     * @param  int|null  $brightness The percentage of brightness to measure against, default is 60.
      * @return string
      */
-    public function fontColor(string $hex = null) : string
+    public function fontColor(string $hex = null, int $brightness = null): string
     {
-        return $this->isDark($hex) ? self::FONT_LIGHT : self::FONT_DARK;
+        $key = $this->isDark($hex, $brightness) ? self::darkColorFont : self::lightColorFont;
+
+        return '#'.ltrim($this->options[$key], '#');
     }
 
     /**
-     * @return array
+     * Return all info about the parsed color in an array format.
+     *
+     * @return array<string, mixed>
      */
-    public function toArray() : array
+    public function toArray(): array
     {
         return [
-            'hex'        => '#'.$this->hex,
+            'hex'        => $this->hex(),
+            'hexdec'     => $this->hexdec,
             'red'        => $this->red,
             'green'      => $this->green,
             'blue'       => $this->blue,
-            'min'        => $this->min,
-            'max'        => $this->max,
+            'rgb'        => $this->rgb(),
+            'hsl'        => $this->hsl(),
+            'hsv'        => $this->hsv(),
+            'hue'        => $this->hue(),
+            'value'      => $this->value(),
             'luminance'  => $this->luminance(),
             'lightness'  => $this->lightness(),
             'brightness' => $this->brightness(),
             'dark'       => $this->isDark(),
             'light'      => $this->isLight(),
-            'rgb'        => $this->rgb(),
-            'hsl'        => $this->hsl(),
-            'hsv'        => $this->hsv(),
+            'font_color' => $this->fontColor(),
         ];
     }
 
     /**
+     * Return all info about the parsed color in an object format.
+     *
+     * @return object
+     */
+    public function toObject(): object
+    {
+        return (object) $this->toArray();
+    }
+
+    /**
+     * Return all info about the parsed color in a JSON string format.
+     *
+     * @param  int  $flags json_decode() flags.
      * @return string
      */
-    public function __toString() : string
+    public function toJson(int $flags = 0): string
     {
-        return json_encode($this->toArray(), JSON_PRETTY_PRINT);
+        return json_encode($this->toArray(), $flags);
+    }
+
+    /**
+     * Return all info about the parsed color in a string format.
+     *
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return $this->toJson();
     }
 }
