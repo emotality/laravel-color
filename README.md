@@ -82,7 +82,7 @@ function toArray() : array;
 #### toArray() :
 
 ```php
-array:13 [
+array:16 [
   "hex" => "#ff2830"
   "hexdec" => 16721968
   "red" => 1           // out of 1
@@ -103,11 +103,14 @@ array:13 [
     +"saturation": 84  // out of 100
     +"value": 100      // out of 100
   }
+  "hue" => 358         // out of 360
+  "value" => 100       // out of 100
   "luminance" => 22.99 // out of 100
   "lightness" => 58    // out of 100
   "brightness" => 41   // out of 100
   "dark" => true
   "light" => false
+  "font_color" => "#FFFFFF"
 ]
 ```
 
