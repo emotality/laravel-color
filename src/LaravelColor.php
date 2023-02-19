@@ -128,7 +128,7 @@ class LaravelColor
             $this->hex = $hex = $hex[0].$hex[0].$hex[1].$hex[1].$hex[2].$hex[2];
         }
 
-        if (! preg_match('/^[A-F0-9]{6}$/', $hex)) {
+        if (! preg_match('/^[A-Fa-f0-9]{6}$/', $hex)) {
             throw new LaravelColorException(sprintf('Invalid hex color! [#%s]', $hex));
         }
 
@@ -206,6 +206,8 @@ class LaravelColor
      * @param  string|null  $hex The hex color code to parse, with or without hashtag.
      * @return object
      * @url https://www.had2know.org/technology/hsl-rgb-color-converter.html
+     * @url https://www.rapidtables.com/convert/color/rgb-to-hsl.html
+     * @url https://bgrins.github.io/TinyColor/
      */
     public function hsl(string $hex = null): object
     {
@@ -213,14 +215,12 @@ class LaravelColor
             $this->parse($hex);
         }
 
-        if ($this->max !== $this->min) {
-            $l = $this->d / 2;
-            $s = $this->d / (1 - abs(2 * $l - 1));
-        }
+        $l = ($this->max + $this->min) / 2;
+        $s = ($this->max == $this->min) ? 0 : $this->d / (1 - abs(2 * $l - 1));
 
         return (object) [
             'hue'        => $this->hue(),
-            'saturation' => intval(round(($s ?? 0) * 100)),
+            'saturation' => intval(round($s * 100)),
             'lightness'  => $this->lightness(),
         ];
     }
@@ -231,6 +231,8 @@ class LaravelColor
      * @param  string|null  $hex The hex color code to parse, with or without hashtag.
      * @return object
      * @url https://www.had2know.org/technology/hsv-rgb-conversion-formula-calculator.html
+     * @url https://www.rapidtables.com/convert/color/rgb-to-hsv.html
+     * @url https://bgrins.github.io/TinyColor/
      */
     public function hsv(string $hex = null): object
     {
