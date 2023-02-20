@@ -48,8 +48,8 @@ $value = \Color::functionName('#ff2830');
 This package also supports `hex8` which includes the alpha:
 
 ```php
-$color = \Color::parse('#ff28307f');
-$alpha = $color->rgba()->alpha; // 0.498 (50%)
+$color = \Color::parse('#ff283080');
+$alpha = $color->rgba()->alpha; // 0.502 (50%)
 ```
 
 
@@ -102,18 +102,18 @@ function toObject(): object;
 
 Please see all functions [here](https://github.com/emotality/laravel-color/blob/1.x/src/Interfaces/ColorFunctions.php).
 
-#### toArray() for `#ff28307f` :
+#### toArray() for `#ff283080` :
 
 ```php
-array:20 [
+array:22 [
   "hex" => "#ff2830"
   "hexdec" => 16721968
-  "hex8" => "#ff28307f"
+  "hex8" => "#ff283080"
   "hex8dec" => 4280823935
   "red" => 1               // out of 1
   "green" => 0.15686       // out of 1
   "blue" => 0.18824        // out of 1
-  "alpha" => 0.498         // out of 1
+  "alpha" => 0.502         // out of 1
   "rgb" => array:3 [
     "red" => 255           // out of 255
     "green" => 40          // out of 255
@@ -123,7 +123,7 @@ array:20 [
     "red" => 255           // out of 255
     "green" => 40          // out of 255
     "blue" => 48           // out of 255
-    "alpha" => 0.498       // out of 1
+    "alpha" => 0.502       // out of 1
   ]
   "hsl" => array:3 [
     "hue" => 358           // out of 360
@@ -143,6 +143,52 @@ array:20 [
   "dark" => true
   "light" => false
   "font_color" => "#ffffff"
+  "shades" => array:21 [
+    0 => "#ff2830"
+    5 => "#f2262e"
+    10 => "#e6242b"
+    15 => "#d92229"
+    20 => "#cc2026"
+    25 => "#bf1e24"
+    30 => "#b31c22"
+    35 => "#a61a1f"
+    40 => "#99181d"
+    45 => "#8c161a"
+    50 => "#801418"
+    55 => "#731216"
+    60 => "#661013"
+    65 => "#590e11"
+    70 => "#4d0c0e"
+    75 => "#400a0c"
+    80 => "#33080a"
+    85 => "#260607"
+    90 => "#1a0405"
+    95 => "#0d0202"
+    100 => "#000000"
+  ]
+  "tints" => array:21 [
+    0 => "#ff2830"
+    5 => "#ff333a"
+    10 => "#ff3e45"
+    15 => "#ff484f"
+    20 => "#ff5359"
+    25 => "#ff5e64"
+    30 => "#ff696e"
+    35 => "#ff7378"
+    40 => "#ff7e83"
+    45 => "#ff898d"
+    50 => "#ff9498"
+    55 => "#ff9ea2"
+    60 => "#ffa9ac"
+    65 => "#ffb4b7"
+    70 => "#ffbfc1"
+    75 => "#ffc9cb"
+    80 => "#ffd4d6"
+    85 => "#ffdfe0"
+    90 => "#ffeaea"
+    95 => "#fff4f5"
+    100 => "#ffffff"
+  ]
 ]
 ```
 

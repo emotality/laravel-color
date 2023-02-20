@@ -178,23 +178,10 @@ trait ColorHelper
      */
     private static function getRGBA(string $hex): object
     {
-        $hex = trim($hex, '#');
+        $hex = self::cleanHex($hex);
 
-        if (preg_match('/^[A-Fa-f0-9]{6}$/', $hex)) {
-            $hex6 = $hex;
-            $hex8 = $hex6.'ff';
-        } elseif (preg_match('/^[A-Fa-f0-9]{3}$/', $hex)) {
-            $hex6 = $hex[0].$hex[0].$hex[1].$hex[1].$hex[2].$hex[2];
-            $hex8 = $hex6.'ff';
-        } elseif (preg_match('/^[A-Fa-f0-9]{8}$/', $hex)) {
-            $hex6 = substr($hex, 0, 6);
-            $hex8 = $hex;
-        } else {
-            throw new LaravelColorException(sprintf('Invalid hex color! [#%s]', $hex));
-        }
-
-        $hex6 = self::setHexCasing($hex6);
-        $hex8 = self::setHexCasing($hex8);
+        $hex6 = $hex->hex6;
+        $hex8 = $hex->hex8;
 
         $r = hexdec($hex8[0].$hex8[1]);
         $g = hexdec($hex8[2].$hex8[3]);
@@ -216,11 +203,42 @@ trait ColorHelper
     }
 
     /**
+     * @param  string  $hex
+     * @return object
+     * @throws \Emotality\LaravelColor\LaravelColorException
+     */
+    private static function cleanHex(string $hex): object
+    {
+        $hex = trim($hex, '#');
+
+        if (preg_match('/^[A-Fa-f0-9]{6}$/', $hex)) {
+            $hex6 = $hex;
+            $hex8 = $hex6.'ff';
+        } elseif (preg_match('/^[A-Fa-f0-9]{3}$/', $hex)) {
+            $hex6 = $hex[0].$hex[0].$hex[1].$hex[1].$hex[2].$hex[2];
+            $hex8 = $hex6.'ff';
+        } elseif (preg_match('/^[A-Fa-f0-9]{8}$/', $hex)) {
+            $hex6 = substr($hex, 0, 6);
+            $hex8 = $hex;
+        } elseif (preg_match('/^[A-Fa-f0-9]{4}$/', $hex)) {
+            $hex6 = $hex[0].$hex[0].$hex[1].$hex[1].$hex[2].$hex[2];
+            $hex8 = $hex6.$hex[3].$hex[3];
+        } else {
+            throw new LaravelColorException(sprintf('Invalid hex color! [#%s]', $hex));
+        }
+
+        $hex6 = self::setHexCasing($hex6);
+        $hex8 = self::setHexCasing($hex8);
+
+        return (object) compact('hex6', 'hex8');
+    }
+
+    /**
      * @param  string|null  $hex
      * @param  string|null  $output
      * @return string
      */
-    private function output(string $hex = null, string $output = null)
+    private function output(string $hex = null, string $output = null): string
     {
         $selected_output = $output ?? self::$options[Color::OUTPUT];
 
@@ -271,37 +289,8 @@ trait ColorHelper
             'dark'       => $this->isDark(),
             'light'      => $this->isLight(),
             'font_color' => $this->fontColor(),
+            'shades'     => $this->getShades(),
+            'tints'      => $this->getTints(),
         ];
-    }
-
-    /**
-     * Return all info about the parsed color in a JSON string format.
-     *
-     * @param  int  $flags json_decode() flags.
-     * @return string
-     */
-    public function toJson(int $flags = 0): string
-    {
-        return json_encode($this->all(), $flags);
-    }
-
-    /**
-     * Return all info about the parsed color in an array format.
-     *
-     * @return array<string, mixed>
-     */
-    public function toArray(): array
-    {
-        return json_decode($this->toJson(), true);
-    }
-
-    /**
-     * Return all info about the parsed color in an object format.
-     *
-     * @return object
-     */
-    public function toObject(): object
-    {
-        return json_decode($this->toJson(), false);
     }
 }

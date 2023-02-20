@@ -110,6 +110,22 @@ class LaravelColor implements ColorFunctions
     }
 
     /**
+     * Get hex code from red, green and blue.
+     *
+     * @param  int  $red
+     * @param  int  $green
+     * @param  int  $blue
+     * @return string
+     */
+    public function rgbToHex(int $red, int $green, int $blue): string
+    {
+        return '#'
+            .str_pad(dechex($red), 2, '0', STR_PAD_LEFT)
+            .str_pad(dechex($green), 2, '0', STR_PAD_LEFT)
+            .str_pad(dechex($blue), 2, '0', STR_PAD_LEFT);
+    }
+
+    /**
      * Get red, green, blue and alpha from parsed color.
      *
      * @param  string|null  $hex The hex color code to parse, with or without hashtag.
@@ -127,6 +143,26 @@ class LaravelColor implements ColorFunctions
             'blue'  => $this->rgba->b,
             'alpha' => $this->rgba->a,
         ];
+    }
+
+    /**
+     * Get hex8 code from red, green, blue and alpha.
+     *
+     * @param  int  $red
+     * @param  int  $green
+     * @param  int  $blue
+     * @param  int  $alpha
+     * @return string
+     */
+    public function rgbaToHex8(int $red, int $green, int $blue, float $alpha = 1): string
+    {
+        $hex = $this->rgbToHex($red, $green, $blue);
+
+        // NOTE: Assuming the following: $alpha 1~100 ? x / 100 = 0.x : 0.x
+        $alpha = $alpha > 1 ? ($alpha / 100) : $alpha;
+        $alpha = $alpha * 255;
+
+        return $hex.str_pad(dechex($alpha), 2, '0', STR_PAD_LEFT);
     }
 
     /**
@@ -324,5 +360,119 @@ class LaravelColor implements ColorFunctions
             : Color::LIGHT_FONT_COLOR;
 
         return $this->output(self::$options[$key]);
+    }
+
+    /**
+     * @param  string  $color1_hex
+     * @param  string  $color2_hex
+     * @param  int  $percentage
+     * @return string
+     * @throws \Emotality\LaravelColor\LaravelColorException
+     */
+    public function mix(string $color1_hex, string $color2_hex, int $percentage = 50): string
+    {
+        $percentage = $percentage < 0 ? 0 : ($percentage > 100 ? 100 : $percentage);
+        $factor = $percentage / 100;
+
+        $color1rgb = self::getRGBA($color1_hex);
+        $color1 = [$color1rgb->r, $color1rgb->g, $color1rgb->b];
+
+        $color2rgb = self::getRGBA($color2_hex);
+        $color2 = [$color2rgb->r, $color2rgb->g, $color2rgb->b];
+
+        for ($i = 0; $i < 3; $i++) {
+            $color[$i] = round($color1[$i] + $factor * ($color2[$i] - $color1[$i]));
+        }
+
+        return $this->rgbToHex($color[0], $color[1], $color[2]);
+    }
+
+    /**
+     * @param  int  $percentage
+     * @param  string|null  $hex
+     * @return string
+     * @throws \Emotality\LaravelColor\LaravelColorException
+     */
+    public function tint(int $percentage = 10, string $hex = null): string
+    {
+        return $this->mix(($hex ?? $this->hex), 'ffffff', $percentage);
+    }
+
+    /**
+     * @param  int  $count
+     * @param  string|null  $hex
+     * @return array
+     */
+    public function getTints(int $count = 20, string $hex = null): array
+    {
+        $percentage = 100 / $count;
+        $factor = 0;
+
+        while ($factor <= 100) {
+            $colors[$factor] = self::tint($factor, $hex);
+            $factor = $factor + $percentage;
+        }
+
+        return $colors;
+    }
+
+    /**
+     * @param  int  $percentage
+     * @param  string|null  $hex
+     * @return string
+     * @throws \Emotality\LaravelColor\LaravelColorException
+     */
+    public function shade(int $percentage = 10, string $hex = null): string
+    {
+        return $this->mix(($hex ?? $this->hex), '000000', $percentage);
+    }
+
+    /**
+     * @param  int  $count
+     * @param  string|null  $hex
+     * @return array
+     */
+    public function getShades(int $count = 20, string $hex = null): array
+    {
+        $percentage = 100 / $count;
+        $factor = 0;
+
+        while ($factor <= 100) {
+            $colors[$factor] = self::shade($factor, $hex);
+            $factor = $factor + $percentage;
+        }
+
+        return $colors;
+    }
+
+    /**
+     * Return all info about the parsed color in a JSON string format.
+     *
+     * @param  int  $flags json_decode() flags.
+     * @return string
+     */
+    public function toJson(int $flags = 0): string
+    {
+        return json_encode($this->all(), $flags);
+    }
+
+    /**
+     * Return all info about the parsed color in an array format.
+     *
+     * @return array<string, mixed>
+     */
+    public function toArray(): array
+    {
+        return json_decode($this->toJson(), true);
+    }
+
+    /**
+     * Return all info about the parsed color in an object format.
+     *
+     * @return object
+     */
+    public function toObject(): object
+    {
+        return json_decode($this->toJson(), false);
     }
 }
