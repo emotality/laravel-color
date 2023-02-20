@@ -100,7 +100,7 @@ function toObject(): object;
 // more coming soon!
 ```
 
-Please see all functions [here](https://github.com/emotality/laravel-color/blob/2.x/src/Interfaces/ColorFunctions.php).
+Please see all functions [here](https://github.com/emotality/laravel-color/blob/1.x/src/Interfaces/ColorFunctions.php).
 
 #### toArray() for `#ff28307f` :
 
