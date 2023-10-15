@@ -8,6 +8,8 @@
 
 A Laravel package to retrieve information from colors, convert and more.
 
+:warning: **Note:** This package is a work-in-progress! :construction:
+
 ## Requirements
 
 - PHP 7.3+
@@ -27,8 +29,8 @@ use Emotality\LaravelColor\Color;
 $value = Color::parse('#ff2830')->functionName();
 // or
 $color = Color::parse('#ff2830');
-$value1 = $color->functionName();
-$value2 = $color->functionName();
+$value1 = $color->functionName(); // see functions below
+$value2 = $color->functionName(); // see functions below
 ```
 
 Functions can also be called directly without parsing the color with `parse()`:
@@ -36,13 +38,13 @@ Functions can also be called directly without parsing the color with `parse()`:
 ```php
 use Emotality\LaravelColor\Color;
 
-$value = Color::functionName('#ff2830');
+$value = Color::functionName('#ff2830'); // see functions below
 ```
 
 As this is a Facade, it can just be called without an import like this:
 
 ```php
-$value = \Color::functionName('#ff2830');
+$value = \Color::functionName('#ff2830'); // see functions below
 ```
 
 This package also supports `hex8` which includes the alpha:
@@ -91,9 +93,9 @@ function value(string $hex = null): int;
 function luminance(string $hex = null): float;
 function lightness(string $hex = null): int;
 function brightness(string $hex = null): int;
-function isDark(string $hex = null, int $brightness = null): bool;
-function isLight(string $hex = null, int $brightness = null): bool;
-function fontColor(string $hex = null, int $brightness = null): string;
+function isDark(string $hex = null, int $contrast = null): bool;
+function isLight(string $hex = null, int $contrast = null): bool;
+function fontColor(string $hex = null, int $contrast = null): string;
 function toJson(): string;
 function toArray(): array;
 function toObject(): object;

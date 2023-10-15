@@ -118,31 +118,31 @@ interface ColorFunctions
     public function brightness(string $hex = null): int;
 
     /**
-     * If the parsed color is darker than specified brightness percentage.
+     * If the parsed color is darker than specified contrast percentage.
      *
      * @param  string|null  $hex The hex color code to parse, with or without hashtag.
-     * @param  int|null  $brightness The percentage of brightness to measure against, default is 50.
+     * @param  int|null  $contrast The percentage of contrast to measure against, default is 50.
      * @return bool
      */
-    public function isDark(string $hex = null, int $brightness = null): bool;
+    public function isDark(string $hex = null, int $contrast = null): bool;
 
     /**
-     * If the parsed color is lighter than specified brightness percentage.
+     * If the parsed color is lighter than specified contrast percentage.
      *
      * @param  string|null  $hex The hex color code to parse, with or without hashtag.
-     * @param  int|null  $brightness The percentage of brightness to measure against, default is 50.
+     * @param  int|null  $contrast The percentage of contrast to measure against, default is 50.
      * @return bool
      */
-    public function isLight(string $hex = null, int $brightness = null): bool;
+    public function isLight(string $hex = null, int $contrast = null): bool;
 
     /**
      * Foreground font color if parsed color is the background.
      *
      * @param  string|null  $hex The hex color code to parse, with or without hashtag.
-     * @param  int|null  $brightness The percentage of brightness to measure against, default is 50.
+     * @param  int|null  $contrast The percentage of contrast to measure against, default is 50.
      * @return string
      */
-    public function fontColor(string $hex = null, int $brightness = null): string;
+    public function fontColor(string $hex = null, int $contrast = null): string;
 
     /**
      * @param  string  $color1_hex

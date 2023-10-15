@@ -205,7 +205,7 @@ class LaravelColor implements ColorFunctions
             $this->parse($hex);
         }
 
-        $s = $this->max === 0 ? 0 : $this->diff / $this->max;
+        $s = floatval($this->max) === 0.0 ? 0 : $this->diff / $this->max;
 
         return (object) [
             'hue'        => $this->hue(),
