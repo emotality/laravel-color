@@ -106,7 +106,7 @@ Please see all functions [here](https://github.com/emotality/laravel-color/blob/
 
 #### toArray() for `#ff283080` :
 
-```php
+```
 array:22 [
   "hex" => "#ff2830"
   "hexdec" => 16721968

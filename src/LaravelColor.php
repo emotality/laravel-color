@@ -151,7 +151,7 @@ class LaravelColor implements ColorFunctions
      * @param  int  $red
      * @param  int  $green
      * @param  int  $blue
-     * @param  int  $alpha
+     * @param  float  $alpha
      * @return string
      */
     public function rgbaToHex8(int $red, int $green, int $blue, float $alpha = 1): string
