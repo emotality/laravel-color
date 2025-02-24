@@ -15,11 +15,11 @@ class LaravelColor implements ColorFunctions
     /**
      * LaravelColor constructor.
      *
-     * @param  string|null  $hex The hex color code to parse, with or without hashtag.
-     * @param  array|null  $options The parsing options.
+     * @param  string|null  $hex  The hex color code to parse, with or without hashtag.
+     * @param  array|null  $options  The parsing options.
      * @return void
      */
-    public function __construct(string $hex = null, array $options = null)
+    public function __construct(?string $hex = null, ?array $options = null)
     {
         $this->rgba = (object) [
             'r' => 0,
@@ -36,11 +36,11 @@ class LaravelColor implements ColorFunctions
     }
 
     /**
-     * @param  string  $hex The hex color code to parse, with or without hashtag.
+     * @param  string  $hex  The hex color code to parse, with or without hashtag.
      * @param  array<string, mixed>|null  $options
      * @return $this
      */
-    public function parse(string $hex, array $options = null): self
+    public function parse(string $hex, ?array $options = null): self
     {
         self::setDefaultOptions();
 
@@ -54,7 +54,7 @@ class LaravelColor implements ColorFunctions
     /**
      * Set/modify parsing options.
      *
-     * @param  array<string, mixed>  $options The options you want to set.
+     * @param  array<string, mixed>  $options  The options you want to set.
      * @return $this
      */
     public function options(array $options): self
@@ -62,7 +62,7 @@ class LaravelColor implements ColorFunctions
         self::setDefaultOptions();
 
         foreach ($options as $key => $value) {
-            if (key_exists($key, self::$options) && ! empty($value)) {
+            if (array_key_exists($key, self::$options) && ! empty($value)) {
                 self::$options[$key] = $value;
             }
         }
@@ -72,8 +72,6 @@ class LaravelColor implements ColorFunctions
 
     /**
      * Get the hex color code with hashtag.
-     *
-     * @return string
      */
     public function hex(): string
     {
@@ -82,8 +80,6 @@ class LaravelColor implements ColorFunctions
 
     /**
      * Get the hex color code with hashtag.
-     *
-     * @return string
      */
     public function hex8(): string
     {
@@ -93,10 +89,9 @@ class LaravelColor implements ColorFunctions
     /**
      * Get red, green and blue from parsed color.
      *
-     * @param  string|null  $hex The hex color code to parse, with or without hashtag.
-     * @return object
+     * @param  string|null  $hex  The hex color code to parse, with or without hashtag.
      */
-    public function rgb(string $hex = null): object
+    public function rgb(?string $hex = null): object
     {
         if ($hex) {
             $this->parse($hex);
@@ -111,11 +106,6 @@ class LaravelColor implements ColorFunctions
 
     /**
      * Get hex code from red, green and blue.
-     *
-     * @param  int  $red
-     * @param  int  $green
-     * @param  int  $blue
-     * @return string
      */
     public function rgbToHex(int $red, int $green, int $blue): string
     {
@@ -128,10 +118,9 @@ class LaravelColor implements ColorFunctions
     /**
      * Get red, green, blue and alpha from parsed color.
      *
-     * @param  string|null  $hex The hex color code to parse, with or without hashtag.
-     * @return object
+     * @param  string|null  $hex  The hex color code to parse, with or without hashtag.
      */
-    public function rgba(string $hex = null): object
+    public function rgba(?string $hex = null): object
     {
         if ($hex) {
             $this->parse($hex);
@@ -147,12 +136,6 @@ class LaravelColor implements ColorFunctions
 
     /**
      * Get hex8 code from red, green, blue and alpha.
-     *
-     * @param  int  $red
-     * @param  int  $green
-     * @param  int  $blue
-     * @param  float  $alpha
-     * @return string
      */
     public function rgbaToHex8(int $red, int $green, int $blue, float $alpha = 1): string
     {
@@ -168,13 +151,13 @@ class LaravelColor implements ColorFunctions
     /**
      * Get hue, saturation and lightness from parsed color.
      *
-     * @param  string|null  $hex The hex color code to parse, with or without hashtag.
-     * @return object
+     * @param  string|null  $hex  The hex color code to parse, with or without hashtag.
+     *
      * @url https://www.had2know.org/technology/hsl-rgb-color-converter.html
      * @url https://www.rapidtables.com/convert/color/rgb-to-hsl.html
      * @url https://bgrins.github.io/TinyColor/
      */
-    public function hsl(string $hex = null): object
+    public function hsl(?string $hex = null): object
     {
         if ($hex) {
             $this->parse($hex);
@@ -193,13 +176,13 @@ class LaravelColor implements ColorFunctions
     /**
      * Get hue, saturation and value from parsed color.
      *
-     * @param  string|null  $hex The hex color code to parse, with or without hashtag.
-     * @return object
+     * @param  string|null  $hex  The hex color code to parse, with or without hashtag.
+     *
      * @url https://www.had2know.org/technology/hsv-rgb-conversion-formula-calculator.html
      * @url https://www.rapidtables.com/convert/color/rgb-to-hsv.html
      * @url https://bgrins.github.io/TinyColor/
      */
-    public function hsv(string $hex = null): object
+    public function hsv(?string $hex = null): object
     {
         if ($hex) {
             $this->parse($hex);
@@ -217,10 +200,9 @@ class LaravelColor implements ColorFunctions
     /**
      * Get the hue from parsed color in a value out of 360.
      *
-     * @param  string|null  $hex The hex color code to parse, with or without hashtag.
-     * @return int
+     * @param  string|null  $hex  The hex color code to parse, with or without hashtag.
      */
-    public function hue(string $hex = null): int
+    public function hue(?string $hex = null): int
     {
         if ($hex) {
             $this->parse($hex);
@@ -248,10 +230,9 @@ class LaravelColor implements ColorFunctions
     /**
      * Get the value from parsed color in a percentage value.
      *
-     * @param  string|null  $hex The hex color code to parse, with or without hashtag.
-     * @return int
+     * @param  string|null  $hex  The hex color code to parse, with or without hashtag.
      */
-    public function value(string $hex = null): int
+    public function value(?string $hex = null): int
     {
         if ($hex) {
             $this->parse($hex);
@@ -263,10 +244,9 @@ class LaravelColor implements ColorFunctions
     /**
      * Color relative luminance from parsed color in a percentage value.
      *
-     * @param  string|null  $hex The hex color code to parse, with or without hashtag.
-     * @return float
+     * @param  string|null  $hex  The hex color code to parse, with or without hashtag.
      */
-    public function luminance(string $hex = null): float
+    public function luminance(?string $hex = null): float
     {
         if ($hex) {
             $this->parse($hex);
@@ -295,10 +275,9 @@ class LaravelColor implements ColorFunctions
     /**
      * Get the lightness from parsed color in a percentage value.
      *
-     * @param  string|null  $hex The hex color code to parse, with or without hashtag.
-     * @return int
+     * @param  string|null  $hex  The hex color code to parse, with or without hashtag.
      */
-    public function lightness(string $hex = null): int
+    public function lightness(?string $hex = null): int
     {
         if ($hex) {
             $this->parse($hex);
@@ -310,10 +289,9 @@ class LaravelColor implements ColorFunctions
     /**
      * Get the brightness from parsed color in a percentage value.
      *
-     * @param  string|null  $hex The hex color code to parse, with or without hashtag.
-     * @return int
+     * @param  string|null  $hex  The hex color code to parse, with or without hashtag.
      */
-    public function brightness(string $hex = null): int
+    public function brightness(?string $hex = null): int
     {
         if ($hex) {
             $this->parse($hex);
@@ -325,11 +303,10 @@ class LaravelColor implements ColorFunctions
     /**
      * If the parsed color is darker than specified brightness percentage.
      *
-     * @param  string|null  $hex The hex color code to parse, with or without hashtag.
-     * @param  int|null  $brightness The percentage of brightness to measure against, default is 50.
-     * @return bool
+     * @param  string|null  $hex  The hex color code to parse, with or without hashtag.
+     * @param  int|null  $brightness  The percentage of brightness to measure against, default is 50.
      */
-    public function isDark(string $hex = null, int $brightness = null): bool
+    public function isDark(?string $hex = null, ?int $brightness = null): bool
     {
         return $this->brightness($hex) < ($brightness ?? self::$options[Color::BRIGHT_PERC]);
     }
@@ -337,11 +314,10 @@ class LaravelColor implements ColorFunctions
     /**
      * If the parsed color is lighter than specified brightness percentage.
      *
-     * @param  string|null  $hex The hex color code to parse, with or without hashtag.
-     * @param  int|null  $brightness The percentage of brightness to measure against, default is 50.
-     * @return bool
+     * @param  string|null  $hex  The hex color code to parse, with or without hashtag.
+     * @param  int|null  $brightness  The percentage of brightness to measure against, default is 50.
      */
-    public function isLight(string $hex = null, int $brightness = null): bool
+    public function isLight(?string $hex = null, ?int $brightness = null): bool
     {
         return ! $this->isDark($hex, $brightness);
     }
@@ -349,11 +325,10 @@ class LaravelColor implements ColorFunctions
     /**
      * Foreground font color if parsed color is the background.
      *
-     * @param  string|null  $hex The hex color code to parse, with or without hashtag.
-     * @param  int|null  $brightness The percentage of brightness to measure against, default is 50.
-     * @return string
+     * @param  string|null  $hex  The hex color code to parse, with or without hashtag.
+     * @param  int|null  $brightness  The percentage of brightness to measure against, default is 50.
      */
-    public function fontColor(string $hex = null, int $brightness = null): string
+    public function fontColor(?string $hex = null, ?int $brightness = null): string
     {
         $key = $this->isDark($hex, $brightness)
             ? Color::DARK_FONT_COLOR
@@ -363,10 +338,6 @@ class LaravelColor implements ColorFunctions
     }
 
     /**
-     * @param  string  $color1_hex
-     * @param  string  $color2_hex
-     * @param  int  $percentage
-     * @return string
      * @throws \Emotality\LaravelColor\LaravelColorException
      */
     public function mix(string $color1_hex, string $color2_hex, int $percentage = 50): string
@@ -388,22 +359,14 @@ class LaravelColor implements ColorFunctions
     }
 
     /**
-     * @param  int  $percentage
-     * @param  string|null  $hex
-     * @return string
      * @throws \Emotality\LaravelColor\LaravelColorException
      */
-    public function tint(int $percentage = 10, string $hex = null): string
+    public function tint(int $percentage = 10, ?string $hex = null): string
     {
         return $this->mix(($hex ?? $this->hex), 'ffffff', $percentage);
     }
 
-    /**
-     * @param  int  $count
-     * @param  string|null  $hex
-     * @return array
-     */
-    public function getTints(int $count = 20, string $hex = null): array
+    public function getTints(int $count = 20, ?string $hex = null): array
     {
         $percentage = 100 / $count;
         $factor = 0;
@@ -417,22 +380,14 @@ class LaravelColor implements ColorFunctions
     }
 
     /**
-     * @param  int  $percentage
-     * @param  string|null  $hex
-     * @return string
      * @throws \Emotality\LaravelColor\LaravelColorException
      */
-    public function shade(int $percentage = 10, string $hex = null): string
+    public function shade(int $percentage = 10, ?string $hex = null): string
     {
         return $this->mix(($hex ?? $this->hex), '000000', $percentage);
     }
 
-    /**
-     * @param  int  $count
-     * @param  string|null  $hex
-     * @return array
-     */
-    public function getShades(int $count = 20, string $hex = null): array
+    public function getShades(int $count = 20, ?string $hex = null): array
     {
         $percentage = 100 / $count;
         $factor = 0;
@@ -448,8 +403,7 @@ class LaravelColor implements ColorFunctions
     /**
      * Return all info about the parsed color in a JSON string format.
      *
-     * @param  int  $flags json_decode() flags.
-     * @return string
+     * @param  int  $flags  json_decode() flags.
      */
     public function toJson(int $flags = 0): string
     {
@@ -468,8 +422,6 @@ class LaravelColor implements ColorFunctions
 
     /**
      * Return all info about the parsed color in an object format.
-     *
-     * @return object
      */
     public function toObject(): object
     {

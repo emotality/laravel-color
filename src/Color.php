@@ -14,7 +14,6 @@ class Color extends Facade
 
     /** @var string Options key for dark font color. */
     const DARK_FONT_COLOR = 'font_dark';
-    
 
     /** @var string Options key for the color output format. */
     const OUTPUT = 'output';
@@ -30,7 +29,6 @@ class Color extends Facade
 
     /** @var string Output key to output color in HEX8 format. */
     const OUTPUT_HEX8 = 'hex8';
-    
 
     /** @var string Options key for the hex output casing. */
     const HEX_CASING = 'hex_casing';

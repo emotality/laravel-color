@@ -133,16 +133,12 @@ trait ColorHelper
         Color::HEX_UPPER,
     ];
 
-    /**
-     * @return void
-     */
     private static function setDefaultOptions(): void
     {
         self::$options = self::$default_options;
     }
 
     /**
-     * @param  string  $hex
      * @return $this
      * @throws \Emotality\LaravelColor\LaravelColorException
      */
@@ -172,8 +168,6 @@ trait ColorHelper
     }
 
     /**
-     * @param  string  $hex
-     * @return object
      * @throws \Emotality\LaravelColor\LaravelColorException
      */
     private static function getRGBA(string $hex): object
@@ -191,10 +185,6 @@ trait ColorHelper
         return (object) compact('hex6', 'hex8', 'r', 'g', 'b', 'a');
     }
 
-    /**
-     * @param  string  $hex
-     * @return string
-     */
     private static function setHexCasing(string $hex): string
     {
         return (self::$options[Color::HEX_CASING] === Color::HEX_UPPER)
@@ -203,8 +193,6 @@ trait ColorHelper
     }
 
     /**
-     * @param  string  $hex
-     * @return object
      * @throws \Emotality\LaravelColor\LaravelColorException
      */
     private static function cleanHex(string $hex): object
@@ -233,12 +221,7 @@ trait ColorHelper
         return (object) compact('hex6', 'hex8');
     }
 
-    /**
-     * @param  string|null  $hex
-     * @param  string|null  $output
-     * @return string
-     */
-    private function output(string $hex = null, string $output = null): string
+    private function output(?string $hex = null, ?string $output = null): string
     {
         $selected_output = $output ?? self::$options[Color::OUTPUT];
 
@@ -249,14 +232,14 @@ trait ColorHelper
         $rgba = self::getRGBA($hex ?? $this->hex);
 
         switch ($selected_output) {
-            default :
-            case Color::OUTPUT_HEX :
+            default:
+            case Color::OUTPUT_HEX:
                 return '#'.$rgba->hex6;
-            case Color::OUTPUT_HEX8 :
+            case Color::OUTPUT_HEX8:
                 return '#'.$rgba->hex8;
-            case Color::OUTPUT_RGB :
+            case Color::OUTPUT_RGB:
                 return sprintf('rgb(%d, %d, %d)', $rgba->r, $rgba->g, $rgba->b);
-            case Color::OUTPUT_RGBA :
+            case Color::OUTPUT_RGBA:
                 return sprintf('rgba(%d, %d, %d, %.3f)', $rgba->r, $rgba->g, $rgba->b, $rgba->a);
         }
     }

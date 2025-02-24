@@ -8,7 +8,7 @@
 
 A Laravel package to retrieve information from colors, convert and more.
 
-:warning: **Note:** This package is a work-in-progress! :construction:
+:warning: **Note:** This package is a work-in-progress, rather fork it! :construction:
 
 ## Requirements
 
